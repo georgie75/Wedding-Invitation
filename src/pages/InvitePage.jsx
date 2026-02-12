@@ -1,4 +1,3 @@
-```javascript
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
@@ -20,10 +19,10 @@ const InvitePage = () => {
       // Allow a demo/preview mode if slug is 'demo'
       if (slug === 'demo') {
         return {
-            id: 'demo-id',
-            family_name: 'Smith',
-            max_attendees: 2,
-            invite_slug: 'demo'
+          id: 'demo-id',
+          family_name: 'Smith',
+          max_attendees: 2,
+          invite_slug: 'demo'
         }
       }
 
@@ -32,7 +31,7 @@ const InvitePage = () => {
         .select('*')
         .eq('invite_slug', slug)
         .single()
-      
+
       if (error) throw error
       return data
     },
@@ -60,24 +59,24 @@ const InvitePage = () => {
     <div className="min-h-screen bg-white">
       <AnimatePresence>
         {!envelopeOpen && (
-           <Envelope 
-             key="envelope" 
-             guestName={guest.family_name} 
-             onOpen={() => setEnvelopeOpen(true)} 
-           />
+          <Envelope
+            key="envelope"
+            guestName={guest.family_name}
+            onOpen={() => setEnvelopeOpen(true)}
+          />
         )}
       </AnimatePresence>
 
       {envelopeOpen && (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
         >
-            <Hero guestName={guest.family_name} maxAttendees={guest.max_attendees} />
-            <WeddingInfo />
-            <RSVPForm guestId={guest.id} maxAttendees={guest.max_attendees} />
-            <Footer />
+          <Hero guestName={guest.family_name} maxAttendees={guest.max_attendees} />
+          <WeddingInfo />
+          <RSVPForm guestId={guest.id} maxAttendees={guest.max_attendees} />
+          <Footer />
         </motion.div>
       )}
     </div>
@@ -85,4 +84,3 @@ const InvitePage = () => {
 }
 
 export default InvitePage
-```
