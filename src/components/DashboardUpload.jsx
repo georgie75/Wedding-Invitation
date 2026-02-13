@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Papa from 'papaparse'
 import { supabase } from '../lib/supabaseClient'
 
-const DashboardUpload = () => {
+const DashboardUpload = ({ onUploadComplete }) => {
     const [uploading, setUploading] = useState(false)
     const [results, setResults] = useState([])
     const [error, setError] = useState(null)
@@ -47,6 +47,7 @@ const DashboardUpload = () => {
 
                     if (error) throw error
                     setResults(prev => [...prev, ...data])
+                    if (onUploadComplete) onUploadComplete()
                     alert(`Successfully added ${data.length} guests!`)
                 } catch (err) {
                     setError(err.message)

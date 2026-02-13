@@ -4,6 +4,13 @@
 @theme {
   --font-playfair: 'Playfair Display', serif;
   --font-roboto: 'Roboto', sans-serif;
+  --color-wedding-cream: #FBF6F3;
+  --color-wedding-champagne: #F7E7CE;
+  --color-wedding-tan: #EBDFD0;
+  --color-wedding-sage: #EEEEE1;
+  --color-wedding-gold: #C4A44E;
+  --color-wedding-text: #4A3728;
+  --color-wedding-text-light: #7A6455;
 }
 
 @layer base {

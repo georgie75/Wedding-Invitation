@@ -16,7 +16,6 @@ const InvitePage = () => {
   const { data: guest, isLoading, error } = useQuery({
     queryKey: ['guest', slug],
     queryFn: async () => {
-      // Allow a demo/preview mode if slug is 'demo'
       if (slug === 'demo') {
         return {
           id: 'demo-id',
@@ -40,23 +39,23 @@ const InvitePage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-pink-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-wedding-cream">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-wedding-gold"></div>
       </div>
     )
   }
 
   if (error || !guest) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50 p-4 text-center">
-        <h1 className="text-3xl font-playfair text-gray-800 mb-4">Invitation Not Found</h1>
-        <p className="text-gray-600">We couldn't find an invitation with that link. Please check the URL.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-wedding-cream p-4 text-center">
+        <h1 className="text-3xl font-playfair text-wedding-text mb-4">Invitation Not Found</h1>
+        <p className="text-wedding-text-light">We couldn't find an invitation with that link. Please check the URL.</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-wedding-cream">
       <AnimatePresence>
         {!envelopeOpen && (
           <Envelope
