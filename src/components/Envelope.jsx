@@ -1,213 +1,211 @@
-import React, { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from "react";
+import { motion, useAnimationControls } from "framer-motion";
+import backPaper from "../assets/backpaper.png";
+import topFlap from "../assets/topFlap.png";
+import sealSVG from "../assets/envelope/A&L seal.svg";
 
-const Envelope = ({ onOpen, guestName }) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [sealBroken, setSealBroken] = useState(false)
+const styles = {
+    stage: {
+        position: "fixed",
+        inset: 0,
+        background: "#f7f2ea",
+        overflow: "hidden",
+        cursor: "pointer",
+        perspective: "1200px",
+    },
 
-    const handleOpen = () => {
-        if (isOpen) return
-        setSealBroken(true)
-        setTimeout(() => setIsOpen(true), 600)
-        setTimeout(() => onOpen(), 2800)
-    }
+    back: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+    },
+
+    flap: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        transformOrigin: "30% 15%", // hinge point
+        transformStyle: "preserve-3d",
+    },
+
+    seal: {
+        position: "absolute",
+        width: 250,
+        height: 250,
+        left: "17%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        zIndex: 5,
+    },
+
+    sealCircle: {
+        width: 100,
+        height: 100,
+        borderRadius: "50%",
+        background: "#f3eadf",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    initials: {
+        fontFamily: "Georgia, serif",
+        fontSize: 40,
+        color: "#b8925a",
+        letterSpacing: "2px",
+    },
+
+    innerShadow: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.25), transparent 40%)",
+        pointerEvents: "none",
+        zIndex: 2,
+    },
+
+    glow: {
+        position: "absolute",
+        left: "50%",
+        top: "60%",
+        transform: "translate(-50%, -50%)",
+        width: "70%",
+        height: "70%",
+        borderRadius: "50%",
+        background:
+            "radial-gradient(circle, white 0%, rgba(255,255,255,0.7) 30%, transparent 70%)",
+        zIndex: 1,
+        pointerEvents: "none",
+    },
+
+    flash: {
+        position: "absolute",
+        inset: 0,
+        background: "white",
+        opacity: 0,
+        pointerEvents: "none",
+        zIndex: 10,
+    },
+};
+
+
+export default function FullScreenEnvelope({ onComplete }) {
+    const [playing, setPlaying] = useState(false);
+    const controls = useAnimationControls();
+
+    const handleTap = async () => {
+        if (playing) return;
+        setPlaying(true);
+
+        await controls.start("sealPress");
+        await controls.start("sealDissolve");
+        await controls.start("openFlap");
+        await controls.start("lightBurst");
+
+        setTimeout(() => {
+            onComplete?.();
+        }, 400);
+    };
 
     return (
-        <motion.div
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden cursor-pointer select-none"
-            onClick={handleOpen}
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 1.2, ease: 'easeInOut' } }}
-            style={{ background: 'linear-gradient(160deg, #FBF6F3 0%, #F7E7CE 40%, #EBDFD0 70%, #FBF6F3 100%)' }}
-        >
-            {/* Subtle shimmer overlay */}
+        <div style={styles.stage} onClick={handleTap}>
+            {/* BACK PAPER */}
+            <img src={backPaper} style={styles.back} alt="" />
+
+            {/* INNER SHADOW (appears when opening) */}
             <motion.div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                    background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 45%, transparent 50%)',
-                    backgroundSize: '200% 100%',
+                style={styles.innerShadow}
+                variants={{
+                    idle: { opacity: 0 },
+                    openFlap: { opacity: 1, transition: { duration: 0.6 } },
                 }}
-                animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                initial="idle"
+                animate={controls}
             />
 
-            {/* Envelope container */}
-            <div className="relative" style={{ perspective: '1200px' }}>
-
-                {/* Envelope body */}
-                <motion.div
-                    className="relative w-[320px] h-[220px] md:w-[380px] md:h-[260px]"
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.8, ease: 'easeOut' }}
-                >
-                    {/* Envelope back */}
-                    <div
-                        className="absolute inset-0 rounded-md shadow-2xl"
-                        style={{ backgroundColor: '#F7E7CE', border: '1px solid #EBDFD0' }}
-                    />
-
-                    {/* Letter/Card that slides up */}
-                    <motion.div
-                        className="absolute left-3 right-3 top-4 bottom-4 rounded-sm flex flex-col items-center justify-center text-center p-6 z-10"
-                        style={{
-                            backgroundColor: '#FFFEFB',
-                            border: '1px solid #F0E6D8',
-                            boxShadow: '0 2px 15px rgba(196,164,78,0.1)',
-                        }}
-                        animate={isOpen ? { y: -160, opacity: 1 } : { y: 0, opacity: 1 }}
-                        transition={{ delay: 0.6, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                        <p className="font-playfair text-xs uppercase tracking-[0.25em] text-wedding-gold mb-3">Wedding Invitation</p>
-                        <div className="w-12 h-[1px] bg-wedding-gold/40 mb-3"></div>
-                        <p className="font-playfair text-lg md:text-xl text-wedding-text">
-                            The {guestName} Family
-                        </p>
-                        <p className="font-roboto text-xs text-wedding-text-light mt-2">October 15, 2026</p>
-                    </motion.div>
-
-                    {/* Envelope front flaps (bottom V shape) */}
-                    <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-md">
-                        {/* Left flap */}
-                        <div
-                            className="absolute bottom-0 left-0 w-full h-full"
-                            style={{
-                                background: 'linear-gradient(to top right, #F2E4D1 50%, transparent 50%)',
-                                clipPath: 'polygon(0 100%, 50% 45%, 0 0)',
-                            }}
-                        />
-                        {/* Right flap */}
-                        <div
-                            className="absolute bottom-0 right-0 w-full h-full"
-                            style={{
-                                background: 'linear-gradient(to top left, #EFE0CC 50%, transparent 50%)',
-                                clipPath: 'polygon(100% 100%, 50% 45%, 100% 0)',
-                            }}
-                        />
-                        {/* Bottom flap */}
-                        <div
-                            className="absolute bottom-0 left-0 w-full h-full"
-                            style={{
-                                background: 'linear-gradient(to top, #F7E7CE 30%, #F0DAC0 100%)',
-                                clipPath: 'polygon(0 100%, 100% 100%, 50% 45%)',
-                            }}
-                        />
-                    </div>
-
-                    {/* Top flap (opens) */}
-                    <motion.div
-                        className="absolute top-0 left-0 w-full h-full z-30 origin-top"
-                        style={{
-                            clipPath: 'polygon(0 0, 100% 0, 50% 55%)',
-                            transformStyle: 'preserve-3d',
-                        }}
-                        animate={isOpen ? { rotateX: 180 } : { rotateX: 0 }}
-                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                        {/* Front of flap */}
-                        <div
-                            className="absolute inset-0"
-                            style={{
-                                background: 'linear-gradient(to bottom, #F5E2CB 0%, #EDD8C0 100%)',
-                                clipPath: 'polygon(0 0, 100% 0, 50% 55%)',
-                                backfaceVisibility: 'hidden',
-                            }}
-                        />
-                        {/* Back of flap (visible when opened) */}
-                        <div
-                            className="absolute inset-0"
-                            style={{
-                                background: 'linear-gradient(to top, #E8D4BC 0%, #F0DCC8 100%)',
-                                clipPath: 'polygon(0 0, 100% 0, 50% 55%)',
-                                backfaceVisibility: 'hidden',
-                                transform: 'rotateX(180deg)',
-                            }}
-                        />
-                    </motion.div>
-
-                    {/* Wax Seal */}
-                    <motion.div
-                        className="absolute z-40 flex items-center justify-center"
-                        style={{
-                            left: '50%',
-                            top: '45%',
-                            transform: 'translate(-50%, -50%)',
-                            width: '80px',
-                            height: '80px',
-                        }}
-                        animate={sealBroken
-                            ? { scale: [1, 1.15, 0], opacity: [1, 1, 0], rotate: [0, 10, -20] }
-                            : { scale: 1 }
-                        }
-                        transition={{ duration: 0.6, ease: 'easeInOut' }}
-                    >
-                        {/* Seal outer ring */}
-                        <div
-                            className="absolute inset-0 rounded-full"
-                            style={{
-                                background: 'radial-gradient(circle at 35% 35%, #D4A853 0%, #C4A44E 30%, #A8883A 70%, #8B7030 100%)',
-                                boxShadow: '0 4px 15px rgba(164,136,58,0.4), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.1)',
-                            }}
-                        />
-                        {/* Seal wavy edge */}
-                        <div
-                            className="absolute rounded-full"
-                            style={{
-                                inset: '3px',
-                                border: '2px solid rgba(255,255,255,0.15)',
-                                borderRadius: '50%',
-                            }}
-                        />
-                        {/* Seal inner circle */}
-                        <div
-                            className="absolute rounded-full"
-                            style={{
-                                inset: '10px',
-                                border: '1px solid rgba(255,255,255,0.2)',
-                            }}
-                        />
-                        {/* Initials */}
-                        <span
-                            className="relative z-10 font-playfair text-xl"
-                            style={{
-                                color: '#F7E7CE',
-                                textShadow: '0 1px 2px rgba(0,0,0,0.2)',
-                            }}
-                        >
-                            S&M
-                        </span>
-                    </motion.div>
-                </motion.div>
-            </div>
-
-            {/* Text below envelope */}
+            {/* HEAVENLY GLOW */}
             <motion.div
-                className="mt-10 text-center"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.8 }}
-            >
-                <p className="font-playfair text-lg md:text-xl text-wedding-text leading-relaxed">
-                    This invitation is
-                </p>
-                <p className="font-playfair text-lg md:text-xl text-wedding-text leading-relaxed">
-                    exclusively for <span className="italic text-wedding-gold">{guestName}</span>
-                </p>
-            </motion.div>
+                style={styles.glow}
+                variants={{
+                    idle: { opacity: 0, scale: 0.7, filter: "blur(20px)" },
+                    lightBurst: {
+                        opacity: [0, 1, 0.9],
+                        scale: [0.7, 1.5, 1.3],
+                        filter: ["blur(20px)", "blur(40px)", "blur(35px)"],
+                        transition: { duration: 1.1, ease: [0.2, 0.9, 0.2, 1] },
+                    },
+                }}
+                initial="idle"
+                animate={controls}
+            />
 
-            {/* Tap hint */}
-            {!isOpen && (
-                <motion.p
-                    className="absolute bottom-12 text-xs uppercase tracking-[0.2em] text-wedding-text-light/60 font-roboto"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: [0, 1, 0.5, 1] }}
-                    transition={{ delay: 2, duration: 2, repeat: Infinity }}
-                >
-                    Tap to open
-                </motion.p>
-            )}
-        </motion.div>
-    )
+            {/* FLASH */}
+            <motion.div
+                style={styles.flash}
+                variants={{
+                    idle: { opacity: 0 },
+                    lightBurst: {
+                        opacity: [0, 0.9, 0],
+                        transition: { duration: 0.6, times: [0, 0.2, 1] },
+                    },
+                }}
+                initial="idle"
+                animate={controls}
+            />
+
+            {/* TOP FLAP */}
+            <motion.img
+                src={topFlap}
+                style={styles.flap}
+                alt=""
+                variants={{
+                    idle: { rotateX: 0 },
+                    openFlap: {
+                        rotateX: 20, // slight open
+                        transition: { duration: 1.3, ease: [0.2, 0.9, 0.2, 1] },
+                    },
+                }}
+                initial="idle"
+                animate={controls}
+            />
+
+            {/* WAX SEAL */}
+            <motion.img
+                src={sealSVG}
+                alt="Wax Seal"
+                style={styles.seal}
+                variants={{
+                    idle: {
+                        scale: 1,
+                        opacity: 1,
+                        y: 0,
+                        filter: "drop-shadow(0px 8px 20px rgba(0,0,0,0.25))"
+                    },
+                    sealPress: {
+                        scale: 1.05,
+                        y: -4,
+                        transition: { duration: 0.25, ease: "easeOut" }
+                    },
+                    sealDissolve: {
+                        opacity: [1, 1, 0],
+                        scale: [1.05, 1.15, 0.9],
+                        y: [-4, -10, -18],
+                        filter: [
+                            "drop-shadow(0px 8px 20px rgba(0,0,0,0.25))",
+                            "drop-shadow(0px 0px 0px rgba(0,0,0,0)) blur(2px)",
+                            "blur(6px)"
+                        ],
+                        transition: { duration: 0.6, ease: "easeOut" }
+                    }
+                }}
+                initial="idle"
+                animate={controls}
+            />
+
+        </div>
+    );
 }
-
-export default Envelope
