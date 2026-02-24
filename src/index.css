@@ -1,9 +1,18 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+@font-face {
+  font-family: 'Sloop Script';
+  src: url('./assets/sloop/Sloop-ScriptThree.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 @theme {
   --font-playfair: 'Playfair Display', serif;
   --font-roboto: 'Roboto', sans-serif;
+  --font-sloop: 'Sloop Script', cursive;
   --color-wedding-cream: #FBF6F3;
   --color-wedding-champagne: #F7E7CE;
   --color-wedding-tan: #EBDFD0;
@@ -11,6 +20,9 @@
   --color-wedding-gold: #C4A44E;
   --color-wedding-text: #4A3728;
   --color-wedding-text-light: #7A6455;
+  --color-wedding-burgundy: #7A1E3A;
+  --color-wedding-wine: #5C162D;
+  --color-wedding-rose: #A8384F;
 }
 
 @layer base {

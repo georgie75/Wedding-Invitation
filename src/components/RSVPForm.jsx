@@ -1,13 +1,22 @@
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useMutation } from '@tanstack/react-query'
 import { supabase } from '../lib/supabaseClient'
+
+/* ── Decorative separator ── */
+const GoldLine = () => (
+    <div className="flex items-center justify-center gap-4 my-8">
+        <div className="h-px w-16 bg-wedding-gold/40" />
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 2 L12 8 L18 10 L12 12 L10 18 L8 12 L2 10 L8 8 Z" fill="#C4A44E" opacity="0.6" />
+        </svg>
+        <div className="h-px w-16 bg-wedding-gold/40" />
+    </div>
+)
 
 const RSVPForm = ({ guestId, maxAttendees }) => {
     const [attending, setAttending] = useState(null)
     const [numAttending, setNumAttending] = useState(1)
-    const [guestNames, setGuestNames] = useState('')
-    const [dietaryNotes, setDietaryNotes] = useState('')
     const [submitted, setSubmitted] = useState(false)
 
     const mutation = useMutation({
@@ -34,125 +43,170 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
             guest_id: guestId,
             attending,
             num_attending: attending ? parseInt(numAttending) : 0,
-            guest_names: guestNames,
-            dietary_notes: dietaryNotes
         }
         mutation.mutate(data)
     }
 
-    if (submitted) {
-        return (
-            <motion.div
-                className="py-20 px-6 text-center bg-wedding-sage"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-            >
-                <h2 className="text-3xl font-playfair mb-4 text-wedding-text">Thank You!</h2>
-                <p className="font-roboto text-wedding-text-light">Your RSVP has been received.</p>
-                {attending ? (
-                    <p className="mt-2 text-wedding-gold font-bold">We can't wait to see you!</p>
-                ) : (
-                    <p className="mt-2 text-wedding-text-light">We will miss you!</p>
-                )}
-            </motion.div>
-        )
-    }
-
     return (
-        <section className="py-20 px-6 bg-wedding-sage" id="rsvp">
+        <section className="h-screen flex items-center justify-center bg-wedding-cream px-6" id="rsvp">
             <motion.div
-                className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg border border-wedding-tan/30"
+                className="w-full max-w-md text-center"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.8 }}
             >
-                <p className="text-sm uppercase tracking-[0.3em] text-wedding-gold mb-2 font-roboto text-center">Kindly Respond</p>
-                <h2 className="text-3xl font-playfair text-center mb-8 text-wedding-text">RSVP</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="flex justify-center space-x-4 mb-6">
-                        <button
-                            type="button"
-                            onClick={() => setAttending(true)}
-                            className={`px-6 py-2 rounded-full border transition-colors font-roboto text-sm ${attending === true ? 'bg-wedding-champagne border-wedding-gold text-wedding-text' : 'border-wedding-tan text-wedding-text-light hover:bg-wedding-cream'}`}
-                        >
-                            Joyfully Accept
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setAttending(false)}
-                            className={`px-6 py-2 rounded-full border transition-colors font-roboto text-sm ${attending === false ? 'bg-wedding-tan border-wedding-text-light text-wedding-text' : 'border-wedding-tan text-wedding-text-light hover:bg-wedding-cream'}`}
-                        >
-                            Regretfully Decline
-                        </button>
-                    </div>
-
-                    {attending === true && (
+                <AnimatePresence mode="wait">
+                    {submitted ? (
+                        /* ── Success State ── */
                         <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            className="space-y-4"
+                            key="success"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.6 }}
+                            className="py-12"
                         >
-                            <div>
-                                <label className="block text-sm font-medium text-wedding-text">Number Attending (Max {maxAttendees})</label>
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max={maxAttendees}
-                                    value={numAttending}
-                                    onChange={(e) => setNumAttending(Math.min(parseInt(e.target.value) || 0, maxAttendees))}
-                                    className="mt-1 block w-full rounded-md border-wedding-tan shadow-sm focus:border-wedding-gold focus:ring-wedding-gold border p-2 bg-wedding-cream/50"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-wedding-text">Guest Names</label>
-                                <textarea
-                                    value={guestNames}
-                                    onChange={(e) => setGuestNames(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-wedding-tan shadow-sm focus:border-wedding-gold focus:ring-wedding-gold border p-2 bg-wedding-cream/50"
-                                    rows="2"
-                                    placeholder="Please list names of all attendees"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-wedding-text">Dietary Restrictions / Notes</label>
-                                <textarea
-                                    value={dietaryNotes}
-                                    onChange={(e) => setDietaryNotes(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-wedding-tan shadow-sm focus:border-wedding-gold focus:ring-wedding-gold border p-2 bg-wedding-cream/50"
-                                    rows="2"
-                                />
-                            </div>
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                                className="text-5xl mb-6"
+                            >
+                                {attending ? "🎉" : "💌"}
+                            </motion.div>
+                            <h2 className="text-4xl font-playfair text-wedding-text mb-3">Thank You</h2>
+                            <GoldLine />
+                            <p className="font-roboto text-wedding-text-light text-lg">
+                                {attending
+                                    ? "We can't wait to celebrate with you!"
+                                    : "We will miss you dearly."
+                                }
+                            </p>
+                        </motion.div>
+                    ) : (
+                        /* ── Form State ── */
+                        <motion.div
+                            key="form"
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            {/* Header */}
+                            <p className="text-sm uppercase tracking-[0.3em] text-wedding-gold mb-2 font-roboto">
+                                Kindly Respond
+                            </p>
+                            <h2
+                                className="text-wedding-text mb-2"
+                                style={{
+                                    fontFamily: "'Pinyon Script', cursive",
+                                    fontSize: "clamp(2.5rem, 8vw, 4rem)",
+                                }}
+                            >
+                                RSVP
+                            </h2>
+                            <GoldLine />
+
+                            <form onSubmit={handleSubmit} className="space-y-8">
+                                {/* Attending Buttons */}
+                                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                                    <motion.button
+                                        type="button"
+                                        onClick={() => setAttending(true)}
+                                        whileHover={{ scale: 1.03 }}
+                                        whileTap={{ scale: 0.97 }}
+                                        className={`px-8 py-3 rounded-full border-2 transition-all duration-300 font-playfair text-base tracking-wide ${attending === true
+                                                ? 'bg-wedding-gold border-wedding-gold text-white shadow-lg'
+                                                : 'border-wedding-tan text-wedding-text-light hover:border-wedding-gold/60'
+                                            }`}
+                                    >
+                                        Joyfully Accept
+                                    </motion.button>
+                                    <motion.button
+                                        type="button"
+                                        onClick={() => setAttending(false)}
+                                        whileHover={{ scale: 1.03 }}
+                                        whileTap={{ scale: 0.97 }}
+                                        className={`px-8 py-3 rounded-full border-2 transition-all duration-300 font-playfair text-base tracking-wide ${attending === false
+                                                ? 'bg-wedding-text border-wedding-text text-white shadow-lg'
+                                                : 'border-wedding-tan text-wedding-text-light hover:border-wedding-text/40'
+                                            }`}
+                                    >
+                                        Regretfully Decline
+                                    </motion.button>
+                                </div>
+
+                                {/* Number of Guests */}
+                                <AnimatePresence>
+                                    {attending === true && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.4 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="bg-wedding-champagne/30 rounded-xl p-6 border border-wedding-tan/20">
+                                                <label className="block text-sm font-playfair text-wedding-text mb-3 tracking-wide">
+                                                    Number of Guests
+                                                </label>
+                                                <div className="flex items-center justify-center gap-4">
+                                                    <motion.button
+                                                        type="button"
+                                                        whileTap={{ scale: 0.9 }}
+                                                        onClick={() => setNumAttending(Math.max(1, numAttending - 1))}
+                                                        className="w-10 h-10 rounded-full border-2 border-wedding-gold/50 text-wedding-gold flex items-center justify-center text-xl hover:bg-wedding-gold/10 transition-colors"
+                                                    >
+                                                        −
+                                                    </motion.button>
+                                                    <span
+                                                        className="text-wedding-text font-playfair w-12 text-center"
+                                                        style={{ fontSize: "2rem" }}
+                                                    >
+                                                        {numAttending}
+                                                    </span>
+                                                    <motion.button
+                                                        type="button"
+                                                        whileTap={{ scale: 0.9 }}
+                                                        onClick={() => setNumAttending(Math.min(maxAttendees, numAttending + 1))}
+                                                        className="w-10 h-10 rounded-full border-2 border-wedding-gold/50 text-wedding-gold flex items-center justify-center text-xl hover:bg-wedding-gold/10 transition-colors"
+                                                    >
+                                                        +
+                                                    </motion.button>
+                                                </div>
+                                                <p className="mt-2 text-xs text-wedding-text-light font-roboto">
+                                                    Maximum {maxAttendees} guests
+                                                </p>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                                {/* Decline message */}
+                                <AnimatePresence>
+                                    {attending === false && (
+                                        <motion.p
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            className="text-wedding-text-light italic font-playfair"
+                                        >
+                                            We understand, and we'll miss you.
+                                        </motion.p>
+                                    )}
+                                </AnimatePresence>
+
+                                {/* Submit */}
+                                <motion.button
+                                    type="submit"
+                                    disabled={attending === null || mutation.isPending}
+                                    whileHover={{ scale: attending !== null ? 1.02 : 1 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="w-full py-4 rounded-full text-sm font-playfair uppercase tracking-[0.2em] text-white bg-wedding-gold shadow-md hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300"
+                                >
+                                    {mutation.isPending ? 'Sending...' : 'Send Response'}
+                                </motion.button>
+                            </form>
                         </motion.div>
                     )}
-
-                    {attending === false && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                        >
-                            <p className="text-center text-wedding-text-light italic">We are sorry you can't make it.</p>
-                            <div className="mt-4">
-                                <label className="block text-sm font-medium text-wedding-text">Message to the Couple (Optional)</label>
-                                <textarea
-                                    value={dietaryNotes}
-                                    onChange={(e) => setDietaryNotes(e.target.value)}
-                                    className="mt-1 block w-full rounded-md border-wedding-tan shadow-sm focus:border-wedding-gold focus:ring-wedding-gold border p-2 bg-wedding-cream/50"
-                                    rows="2"
-                                />
-                            </div>
-                        </motion.div>
-                    )}
-
-                    <button
-                        type="submit"
-                        disabled={attending === null || mutation.isPending}
-                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wedding-gold hover:bg-wedding-gold/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wedding-gold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                        {mutation.isPending ? 'Sending...' : 'Send RSVP'}
-                    </button>
-                </form>
+                </AnimatePresence>
             </motion.div>
         </section>
     )

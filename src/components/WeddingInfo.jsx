@@ -1,38 +1,54 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
+const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: (delay = 0) => ({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.8, delay, ease: "easeOut" },
+    }),
+}
+
 const WeddingInfo = () => {
     return (
-        <section className="py-20 px-6 bg-wedding-cream text-center">
+        <section className="h-screen flex items-center justify-center bg-wedding-cream text-center px-6">
             <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.3 }}
                 className="max-w-3xl mx-auto"
             >
-                <p className="text-sm uppercase tracking-[0.3em] text-wedding-gold mb-2 font-roboto">Celebration Details</p>
-                <h2 className="text-4xl font-playfair text-wedding-text mb-12">The Details</h2>
+                <motion.p
+                    custom={0}
+                    variants={fadeUp}
+                    className="text-sm uppercase tracking-[0.3em] text-wedding-gold mb-2 font-roboto"
+                >
+                    Celebration Details
+                </motion.p>
+                <motion.h2
+                    custom={0.1}
+                    variants={fadeUp}
+                    className="text-4xl font-playfair text-wedding-text mb-12"
+                >
+                    The Details
+                </motion.h2>
 
                 <div className="grid md:grid-cols-3 gap-8">
                     <motion.div
+                        custom={0.2}
+                        variants={fadeUp}
                         className="p-8 bg-wedding-champagne/40 rounded-lg border border-wedding-tan/30"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1, duration: 0.6 }}
                     >
                         <div className="text-wedding-gold text-2xl mb-3">📅</div>
                         <h3 className="text-xl font-playfair font-bold mb-2 text-wedding-text">When</h3>
-                        <p className="font-roboto text-wedding-text-light">October 15, 2026</p>
+                        <p className="font-roboto text-wedding-text-light">March 28, 2026</p>
                         <p className="font-roboto text-wedding-text-light">4:00 PM Ceremony</p>
                     </motion.div>
                     <motion.div
+                        custom={0.35}
+                        variants={fadeUp}
                         className="p-8 bg-wedding-champagne/40 rounded-lg border border-wedding-tan/30"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2, duration: 0.6 }}
                     >
                         <div className="text-wedding-gold text-2xl mb-3">📍</div>
                         <h3 className="text-xl font-playfair font-bold mb-2 text-wedding-text">Where</h3>
@@ -40,11 +56,9 @@ const WeddingInfo = () => {
                         <p className="font-roboto text-wedding-text-light">123 Wedding Lane, Cityville</p>
                     </motion.div>
                     <motion.div
+                        custom={0.5}
+                        variants={fadeUp}
                         className="p-8 bg-wedding-champagne/40 rounded-lg border border-wedding-tan/30"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.3, duration: 0.6 }}
                     >
                         <div className="text-wedding-gold text-2xl mb-3">🥂</div>
                         <h3 className="text-xl font-playfair font-bold mb-2 text-wedding-text">Reception</h3>

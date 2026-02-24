@@ -4,7 +4,7 @@ import { motion, useAnimationControls } from "framer-motion";
 import backPaper from "../assets/backpaper.png";
 import topFlap from "../assets/topFlap.png";
 import sealSVG from "../assets/envelope/A&L seal.svg";
-import bgImage from "../assets/background2.png";
+import bgImage from "../assets/entrancebg.png";
 import flowerLeft from "../assets/flower1.png";
 import flowerRight from "../assets/flower2.png";
 
@@ -13,14 +13,15 @@ const styles = {
     stage: {
         position: "fixed",
         inset: 0,
-        // zIndex: 50, // Removed to avoid stacking context issues
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "center bottom",
+
+        backgroundColor: "#f5efe9",
         overflow: "hidden",
         cursor: "pointer",
         perspective: "1200px",
@@ -36,7 +37,6 @@ const styles = {
         justifyContent: "center",
         width: "100%",
         maxWidth: 800,
-        height: "100%",
     },
 
     headerText: {
@@ -63,8 +63,8 @@ const styles = {
     // The envelope wrapper
     envelopeWrapper: {
         position: "relative",
-        width: "min(90vw, 550px)", // Responsive width
-        height: "min(67.5vw, 412px)", // 4/3 aspect ratio calculated manually to ensure height
+        width: "min(70vw, 420px)",
+        height: "min(52.5vw, 315px)",
         transformStyle: "preserve-3d",
         zIndex: 50,
     },
@@ -145,7 +145,7 @@ const styles = {
     },
 
     clickHint: {
-        marginTop: "3rem",
+        marginTop: "1.5rem",
         fontFamily: "'Playfair Display', serif",
         letterSpacing: "0.2em",
         fontSize: "12px",
@@ -155,7 +155,7 @@ const styles = {
     },
 };
 
-export default function FullScreenEnvelope({ onComplete }) {
+export default function FullScreenEnvelope({ onOpen }) {
     const [playing, setPlaying] = useState(false);
     const controls = useAnimationControls();
 
@@ -169,11 +169,14 @@ export default function FullScreenEnvelope({ onComplete }) {
 
         // Parallel animations for opening
         controls.start("openFlap");
-        await controls.start("lightBurst");
+        controls.start("lightBurst");
 
+        // Trigger completion when the screen is fully white
+        // Flash animation: 0.5s delay + 2.5s duration = 3.0s total
+        // We trigger just before it finishes to ensure overlap
         setTimeout(() => {
-            onComplete?.();
-        }, 800); // delay completion slightly
+            onOpen?.();
+        }, 2800);
     };
 
     return (
@@ -223,8 +226,18 @@ export default function FullScreenEnvelope({ onComplete }) {
                         transition={{ duration: 1, delay: 0.5 }}
                     />
 
-                    {/* The Envelope */}
-                    <div style={styles.envelopeWrapper}>
+                    {/* The Envelope — floating */}
+                    <motion.div
+                        style={styles.envelopeWrapper}
+                        animate={!playing ? {
+                            y: [0, -8, 0],
+                        } : {}}
+                        transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    >
                         {/* BACK PAPER */}
                         <img src={backPaper} style={styles.back} alt="" />
 
@@ -312,7 +325,7 @@ export default function FullScreenEnvelope({ onComplete }) {
                             initial="idle"
                             animate={controls}
                         />
-                    </div>
+                    </motion.div>
                 </div>
 
                 <motion.div
