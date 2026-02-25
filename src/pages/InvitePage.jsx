@@ -1,66 +1,39 @@
 import React, { useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import { AnimatePresence, motion, useInView } from 'framer-motion'
 import { supabase } from '../lib/supabaseClient'
 import Envelope from '../components/Envelope'
 import Hero from '../components/Hero'
-import WeddingInfo from '../components/WeddingInfo'
+import { DetailWhen, DetailWhere, DetailReception } from '../components/WeddingInfo'
 import RSVPForm from '../components/RSVPForm'
 import Footer from '../components/Footer'
 
-/* ── Scroll-driven fade wrapper ── */
-const FadeSection = ({ children, isFirst, isLast }) => {
+/**
+ * Full-page section with scroll-snap and smooth fade.
+ * Uses useInView to detect visibility — when >35% of the section
+ * is visible it fades in, when it drops below 35% it fades out.
+ */
+const FadeSection = ({ children, snap = true }) => {
   const ref = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "start start", "end start", "end end"],
-  })
-
-  // First section: don't fade in (already visible), fade out as you scroll away
-  // Last section: fade in, don't fade out
-  // Middle sections: fade in AND fade out
-  const opacity = useTransform(
-    scrollYProgress,
-    isFirst
-      ? [0, 0, 0.85, 1]        // hold at 1, fade out late
-      : isLast
-        ? [0, 0.15, 1, 1]      // fade in early, hold at 1
-        : [0, 0.15, 0.85, 1],  // fade in early, fade out late
-    isFirst
-      ? [1, 1, 1, 0]
-      : isLast
-        ? [0, 1, 1, 1]
-        : [0, 1, 1, 0],
-  )
-
-  const scale = useTransform(
-    scrollYProgress,
-    isFirst
-      ? [0, 0, 0.85, 1]
-      : isLast
-        ? [0, 0.15, 1, 1]
-        : [0, 0.15, 0.85, 1],
-    isFirst
-      ? [1, 1, 1, 0.97]
-      : isLast
-        ? [0.97, 1, 1, 1]
-        : [0.97, 1, 1, 0.97],
-  )
+  const isInView = useInView(ref, { amount: 0.35 })
 
   return (
-    <div
+    <motion.div
       ref={ref}
-      className="h-screen"
-      style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }}
+      animate={{ opacity: isInView ? 1 : 0 }}
+      initial={{ opacity: 0 }}
+      transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+      style={{
+        minHeight: snap ? '100vh' : undefined,
+        scrollSnapAlign: snap ? 'start' : undefined,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
     >
-      <motion.div
-        style={{ opacity, scale }}
-        className="h-full"
-      >
-        {children}
-      </motion.div>
-    </div>
+      {children}
+    </motion.div>
   )
 }
 
@@ -123,33 +96,48 @@ const InvitePage = () => {
 
       {envelopeOpen && (
         <div
-          className="h-screen overflow-y-auto"
           style={{
-            scrollSnapType: "y proximity",
-            scrollBehavior: "smooth",
+            height: '100vh',
+            overflowY: 'auto',
+            scrollSnapType: 'y proximity',
+            scrollBehavior: 'smooth',
           }}
         >
-          {/* Transition overlay */}
+          {/* White flash transition from envelope */}
           <motion.div
             className="fixed inset-0 bg-white z-50 pointer-events-none"
             initial={{ opacity: 1 }}
             animate={{ opacity: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
+            transition={{ duration: 2, ease: 'easeOut' }}
           />
 
-          <FadeSection isFirst>
+          {/* Hero */}
+          <div style={{ minHeight: '100vh', scrollSnapAlign: 'start' }}>
             <Hero guestName={guest.family_name} maxAttendees={guest.max_attendees} />
-          </FadeSection>
+          </div>
 
+          {/* When */}
           <FadeSection>
-            <WeddingInfo />
+            <DetailWhen />
           </FadeSection>
 
+          {/* Where */}
+          <FadeSection>
+            <DetailWhere />
+          </FadeSection>
+
+          {/* Reception */}
+          <FadeSection>
+            <DetailReception />
+          </FadeSection>
+
+          {/* RSVP Form */}
           <FadeSection>
             <RSVPForm guestId={guest.id} maxAttendees={guest.max_attendees} />
           </FadeSection>
 
-          <FadeSection isLast>
+          {/* Footer */}
+          <FadeSection snap={false}>
             <Footer />
           </FadeSection>
         </div>

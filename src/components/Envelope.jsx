@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
-import backPaper from "../assets/backpaper.png";
+import backPaper from "../assets/backpaper2.png";
 import topFlap from "../assets/topFlap.png";
 import sealSVG from "../assets/envelope/A&L seal.svg";
 import bgImage from "../assets/entrancebg.png";
@@ -36,7 +36,8 @@ const styles = {
         alignItems: "center",
         justifyContent: "center",
         width: "100%",
-        maxWidth: 800,
+        maxWidth: 1000,
+        marginTop: "-10vh", // Move the group up
     },
 
     headerText: {
@@ -51,9 +52,11 @@ const styles = {
     },
 
     namesText: {
-        fontFamily: "'Great Vibes', cursive",
-        fontSize: "min(12vw, 64px)",
-        color: "#3a2a1a",
+        fontFamily: "'Playfair Display', serif",
+        fontSize: "min(9vw, 64px)",
+        textTransform: "uppercase",
+        letterSpacing: "0.15em",
+        color: "#5e4b35",
         marginBottom: "2rem",
         textAlign: "center",
         zIndex: 60,
@@ -63,8 +66,10 @@ const styles = {
     // The envelope wrapper
     envelopeWrapper: {
         position: "relative",
-        width: "min(70vw, 420px)",
-        height: "min(52.5vw, 315px)",
+        //  width: "min(70vw, 420px)",
+        // height: "min(52.5vw, 315px)",
+        width: "min(90vw, 500px)",
+        height: "min(66vw, 315px)",
         transformStyle: "preserve-3d",
         zIndex: 50,
     },
@@ -123,6 +128,7 @@ const styles = {
 
     // Decorative Flowers
     flowerLeft: {
+        display: "none",
         position: "absolute",
         left: "-10%",
         bottom: "5%",
@@ -134,6 +140,7 @@ const styles = {
     },
 
     flowerRight: {
+        display: "none",
         position: "absolute",
         right: "-10%",
         top: "20%",
@@ -205,7 +212,7 @@ export default function FullScreenEnvelope({ onOpen }) {
                     <div style={styles.headerText}>
                         Together with their families
                     </div>
-                    <div style={styles.namesText}>Elodie & Marc</div>
+                    <div style={styles.namesText}>Jenny & Gary</div>
                 </motion.div>
 
                 {/* Envelope Group */}
@@ -328,14 +335,7 @@ export default function FullScreenEnvelope({ onOpen }) {
                     </motion.div>
                 </div>
 
-                <motion.div
-                    style={styles.clickHint}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.7 }}
-                    transition={{ delay: 1.5, duration: 1 }}
-                >
-                    Click to Open
-                </motion.div>
+
             </div>
         </div>
     );
