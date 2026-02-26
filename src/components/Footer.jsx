@@ -1,7 +1,10 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '../context/LanguageContext'
 
 const Footer = () => {
+    const { t } = useLanguage()
+
     return (
         <section className="h-screen flex flex-col items-center justify-center bg-wedding-cream text-center px-6">
             <motion.div
@@ -60,7 +63,7 @@ const Footer = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.7 }}
                 >
-                    Made with love
+                    {t('madeWithLove')}
                 </motion.p>
             </motion.div>
         </section>

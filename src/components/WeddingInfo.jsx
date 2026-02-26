@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '../context/LanguageContext'
 
 /* ── March 2026 calendar data ── */
 const DAYS_IN_MARCH = 31
@@ -36,28 +37,37 @@ function useCountdown(targetDate) {
 }
 
 /* ── CountdownUnit ── */
-function CountdownUnit({ value, label }) {
+function CountdownUnit({ value, label, showDivider }) {
     return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <div
-                style={{
-                    width: 52, height: 52,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    borderRadius: 8,
-                    border: "1px solid rgba(235,223,208,0.4)",
-                    backgroundColor: "rgba(247,231,206,0.35)",
-                }}
-            >
-                <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.3rem", color: "#4A3728" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: "40px" }}>
+                <span style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "1.7rem", // Scaled down for elegance
+                    color: "#4A3728",
+                    lineHeight: 1,
+                    marginBottom: "4px"
+                }}>
                     {String(value).padStart(2, '0')}
                 </span>
+                <span style={{
+                    fontSize: "0.5rem", textTransform: "uppercase",
+                    letterSpacing: "0.25em", color: "#C4A44E", fontFamily: "'Roboto', sans-serif",
+                }}>
+                    {label}
+                </span>
             </div>
-            <span style={{
-                marginTop: 6, fontSize: "0.55rem", textTransform: "uppercase",
-                letterSpacing: "0.2em", color: "#7A6455", fontFamily: "'Roboto', sans-serif",
-            }}>
-                {label}
-            </span>
+            {showDivider && (
+                <span style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "1.5rem", // Scaled down divider
+                    color: "rgba(196,164,78,0.3)",
+                    margin: "0 6px",
+                    fontWeight: 300
+                }}>
+                    :
+                </span>
+            )}
         </div>
     )
 }
@@ -77,6 +87,7 @@ function ThinLine() {
    Section 1: WHEN — Calendar + Date
    ═══════════════════════════════════════════════════ */
 export function DetailWhen() {
+    const { t } = useLanguage()
     const weddingDate = new Date('2026-03-28T16:00:00')
     const countdown = useCountdown(weddingDate)
 
@@ -104,7 +115,7 @@ export function DetailWhen() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.1 }}
                 >
-                    Our Big Day
+                    {t('when')}
                 </motion.h2>
 
                 <motion.p
@@ -117,7 +128,7 @@ export function DetailWhen() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                    March 2026
+                    {t('march')}
                 </motion.p>
 
                 <ThinLine />
@@ -178,10 +189,10 @@ export function DetailWhen() {
                     transition={{ duration: 0.6, delay: 0.5 }}
                 >
                     <p style={{ fontFamily: "'Playfair Display', serif", color: "#4A3728", fontSize: "1rem", marginBottom: 6 }}>
-                        The Ceremony · 28 March 2026
+                        {t('theCeremony')}
                     </p>
                     <p style={{ fontFamily: "'Roboto', sans-serif", color: "#7A6455", fontSize: "0.85rem" }}>
-                        Ceremony to start at 4:00 PM
+                        {t('ceremonyTime')}
                     </p>
                 </motion.div>
 
@@ -194,17 +205,11 @@ export function DetailWhen() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.6 }}
                 >
-                    <p style={{
-                        fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em",
-                        color: "#C4A44E", fontFamily: "'Roboto', sans-serif", marginBottom: 16,
-                    }}>
-                        Counting Down
-                    </p>
-                    <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
-                        <CountdownUnit value={countdown.days} label="Days" />
-                        <CountdownUnit value={countdown.hours} label="Hours" />
-                        <CountdownUnit value={countdown.minutes} label="Min" />
-                        <CountdownUnit value={countdown.seconds} label="Sec" />
+                    <div style={{ display: "flex", justifyContent: "center", gap: 0 }}>
+                        <CountdownUnit value={countdown.days} label={t('days')} showDivider={true} />
+                        <CountdownUnit value={countdown.hours} label={t('hours')} showDivider={true} />
+                        <CountdownUnit value={countdown.minutes} label={t('minutes')} showDivider={true} />
+                        <CountdownUnit value={countdown.seconds} label={t('seconds')} showDivider={false} />
                     </div>
                 </motion.div>
             </motion.div>
@@ -216,46 +221,159 @@ export function DetailWhen() {
    Section 2: WHERE — Venue
    ═══════════════════════════════════════════════════ */
 export function DetailWhere() {
+    const { t } = useLanguage()
+
     return (
         <section style={{
             minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-            backgroundColor: "#FBF6F3", textAlign: "center", padding: "0 16px",
+            backgroundColor: "#FBF6F3", textAlign: "center", padding: "0 16px", position: "relative", overflow: "hidden"
         }}>
+            {/* Background flourish subtle */}
+            <div style={{
+                position: "absolute", top: "10%", left: "-10%", opacity: 0.05, transform: "scale(2)", pointerEvents: "none"
+            }}>
+                <svg width="200" height="200" viewBox="0 0 100 100">
+                    <path d="M50 0 C40 40 10 40 0 50 C10 60 40 60 50 100 C60 60 90 60 100 50 C90 40 60 40 50 0 Z" fill="#C4A44E" />
+                </svg>
+            </div>
+
             <motion.div
-                style={{ width: "100%", maxWidth: 400, margin: "0 auto" }}
-                initial={{ opacity: 0, y: 30 }}
+                style={{ width: "100%", maxWidth: 640, margin: "0 auto", position: "relative", zIndex: 10, padding: "20px 0" }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.8 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 1.0, ease: "easeOut" }}
             >
                 <p style={{
-                    fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em",
-                    color: "#C4A44E", fontFamily: "'Roboto', sans-serif", marginBottom: 8,
+                    fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.4em",
+                    color: "#C4A44E", fontFamily: "'Roboto', sans-serif", marginBottom: 16,
                 }}>
-                    Venue
+                    {t('where')}
                 </p>
                 <h2 style={{
                     fontFamily: "'Pinyon Script', cursive",
-                    fontSize: "clamp(2rem, 6vw, 3rem)",
-                    color: "#4A3728", marginBottom: 16,
+                    fontSize: "clamp(3rem, 10vw, 5.5rem)",
+                    color: "#4A3728", marginBottom: 24, lineHeight: 1,
+                    textShadow: "1px 1px 3px rgba(196,164,78,0.2)"
                 }}>
-                    The Grand Garden Estate
+                    {t('venueName')}
                 </h2>
 
                 <ThinLine />
 
+                {/* The Royal Map Card */}
                 <div style={{
-                    padding: 32, borderRadius: 12,
-                    border: "1px solid rgba(235,223,208,0.4)",
-                    backgroundColor: "rgba(247,231,206,0.25)",
+                    position: "relative",
+                    padding: "70px 40px 50px",
+                    borderRadius: "200px 200px 16px 16px", // Grand Arch
+                    backgroundColor: "#FFFFFF",
+                    boxShadow: "0 30px 60px rgba(74, 55, 40, 0.08), inset 0 0 0 1px rgba(255,255,255,0.8)",
+                    display: "flex", flexDirection: "column", alignItems: "center",
+                    marginTop: "40px",
+                    border: "1px solid rgba(196,164,78,0.3)",
+                    background: "linear-gradient(to bottom, #FFFFFF 0%, #FAF8F5 100%)"
                 }}>
-                    <div style={{ fontSize: "2rem", marginBottom: 12 }}>📍</div>
-                    <p style={{ fontFamily: "'Playfair Display', serif", color: "#4A3728", fontSize: "1.1rem", marginBottom: 8 }}>
-                        123 Wedding Lane
+                    {/* Inner Arch Line 1 */}
+                    <div style={{
+                        position: "absolute", inset: "10px",
+                        border: "1px solid rgba(196,164,78,0.4)", pointerEvents: "none",
+                        borderRadius: "190px 190px 8px 8px",
+                    }} />
+                    {/* Inner Arch Line 2 (delicate) */}
+                    <div style={{
+                        position: "absolute", inset: "16px",
+                        border: "0.5px solid rgba(196,164,78,0.2)", pointerEvents: "none",
+                        borderRadius: "184px 184px 4px 4px",
+                    }} />
+
+                    {/* Majestic Crest / Motif */}
+                    <div style={{ marginBottom: 28, color: "#C4A44E" }}>
+                        <svg width="64" height="64" viewBox="0 0 120 120" fill="none">
+                            {/* Royal minimalist crest */}
+                            <path d="M60 10 L68 35 L95 35 L75 55 L82 85 L60 68 L38 85 L45 55 L25 35 L52 35 Z" fill="rgba(196,164,78,0.15)" stroke="#C4A44E" strokeWidth="1" />
+                            <circle cx="60" cy="60" r="45" stroke="#C4A44E" strokeWidth="0.5" strokeDasharray="4 4" />
+                            <circle cx="60" cy="10" r="3" fill="#C4A44E" />
+                            <circle cx="60" cy="110" r="3" fill="#C4A44E" />
+                            <circle cx="10" cy="60" r="3" fill="#C4A44E" />
+                            <circle cx="110" cy="60" r="3" fill="#C4A44E" />
+                        </svg>
+                    </div>
+
+                    {/* Address Block */}
+                    <p style={{
+                        fontFamily: "'Playfair Display', serif", color: "#4A3728", fontSize: "1.4rem",
+                        textTransform: "uppercase", marginBottom: 12, letterSpacing: "0.1em", fontWeight: 500
+                    }}>
+                        {t('venueAddress1')}
                     </p>
-                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#7A6455", fontSize: "0.85rem", lineHeight: 1.6 }}>
-                        Cityville, State 12345
+                    <div style={{ width: "30px", height: "1px", backgroundColor: "#C4A44E", marginBottom: 12, opacity: 0.5 }} />
+                    <p style={{
+                        fontFamily: "'Roboto', sans-serif", color: "#8A7664", fontSize: "0.7rem",
+                        letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 40
+                    }}>
+                        {t('venueAddress2')}
                     </p>
+
+                    {/* Interactive Map - Framed like a painting */}
+                    <div style={{
+                        width: "100%", height: "300px", marginBottom: 40,
+                        position: "relative",
+                        padding: "8px",
+                        background: "linear-gradient(135deg, rgba(196,164,78,0.05), rgba(196,164,78,0.25), rgba(196,164,78,0.05))",
+                        borderRadius: "8px",
+                        boxShadow: "inset 0 2px 8px rgba(0,0,0,0.06), 0 10px 30px rgba(74, 55, 40, 0.05)"
+                    }}>
+                        {/* Map wrapper with inner rounded corners to match the border */}
+                        <div style={{ width: "100%", height: "100%", overflow: "hidden", borderRadius: "4px", backgroundColor: "#FAF8F5", border: "1px solid rgba(255,255,255,0.8)" }}>
+                            <iframe
+                                width="100%"
+                                frameBorder="0"
+                                scrolling="no"
+                                marginHeight="0"
+                                marginWidth="0"
+                                src="https://www.openstreetmap.org/export/embed.html?bbox=-89.139261%2C17.075971%2C-89.119261%2C17.095971&layer=mapnik&marker=17.085971%2C-89.129261"
+                                style={{
+                                    filter: "sepia(25%) hue-rotate(-15deg) saturate(85%) contrast(1.1)",
+                                    height: "calc(100% + 50px)", // crop bottom area
+                                    border: "none"
+                                }}
+                            ></iframe>
+                        </div>
+                    </div>
+
+                    {/* Luxurious Directions Button */}
+                    <a
+                        href="https://www.google.com/maps/dir/?api=1&destination=17.085971,-89.129261"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative overflow-hidden transition-all duration-500 hover:shadow-[0_15px_30px_rgba(196,164,78,0.3)] hover:-translate-y-1"
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "12px",
+                            padding: "18px 48px",
+                            background: "linear-gradient(135deg, #B08D57, #EAC875, #B08D57)",
+                            backgroundSize: "200% auto",
+                            color: "#FFFFFF",
+                            borderRadius: "100px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.25em",
+                            fontSize: "0.75rem",
+                            fontFamily: "'Roboto', sans-serif",
+                            textDecoration: "none",
+                            boxShadow: "0 8px 20px rgba(196,164,78,0.2), inset 0 1px 1px rgba(255,255,255,0.4)",
+                            fontWeight: 600,
+                            textShadow: "0 1px 2px rgba(0,0,0,0.1)"
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundPosition = "right center" }}
+                        onMouseLeave={(e) => { e.currentTarget.style.backgroundPosition = "left center" }}
+                    >
+                        <span>{t('getDirections')}</span>
+                        <svg className="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                    </a>
                 </div>
             </motion.div>
         </section>
@@ -263,63 +381,196 @@ export function DetailWhere() {
 }
 
 /* ═══════════════════════════════════════════════════
-   Section 3: RECEPTION — Countdown
+   Section 3: PEOPLE INVOLVED
    ═══════════════════════════════════════════════════ */
-export function DetailReception() {
+export function DetailPeople() {
+    const { t } = useLanguage()
+
     return (
         <section style={{
             minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-            backgroundColor: "#FBF6F3", textAlign: "center", padding: "0 16px",
+            backgroundColor: "#FBF6F3", textAlign: "center", padding: "0px 16px",
         }}>
             <motion.div
-                style={{ width: "100%", maxWidth: 400, margin: "0 auto" }}
+                style={{ width: "100%", maxWidth: 600, margin: "0 auto" }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.8 }}
             >
-                <p style={{
-                    fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.3em",
-                    color: "#C4A44E", fontFamily: "'Roboto', sans-serif", marginBottom: 8,
-                }}>
-                    Celebration
-                </p>
+                {/* Elegant Hand-drawn Tulip Line Art */}
+                <div style={{ marginBottom: 8, marginTop: "-20px", display: "flex", justifyContent: "center" }}>
+                    <svg width="120" height="110" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        {/* Soft blush watercolor offset blobs */}
+                        <path d="M42 22 Q 50 5 70 15 Q 85 25 78 35 Q 70 45 55 42 Q 40 40 42 22 Z" fill="#ECA6A6" opacity="0.6" />
+                        <path d="M20 48 Q 25 35 40 38 Q 48 40 45 55 Q 40 70 28 65 Q 15 60 20 48 Z" fill="#ECA6A6" opacity="0.6" />
+                        <path d="M55 48 Q 65 35 78 40 Q 85 45 80 55 Q 75 65 60 58 Q 50 55 55 48 Z" fill="#ECA6A6" opacity="0.6" />
+
+                        {/* Top Flower Cup */}
+                        <path d="M46 22 Q 40 35 58 42" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+                        <path d="M78 20 Q 82 35 58 42" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+                        <path d="M46 22 Q 52 18 58 24 Q 65 20 78 20" stroke="#1A1A1A" strokeWidth="0.9" strokeLinejoin="round" fill="none" />
+                        <path d="M52 20 C 52 30 55 35 58 42" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+                        <path d="M72 19 C 72 30 65 35 58 42" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+
+                        {/* Main Stems */}
+                        <path d="M58 42 Q 62 80 55 110" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+                        <path d="M40 60 Q 55 80 60 90" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+
+                        {/* Bottom Left Flower Cup */}
+                        <path d="M22 55 Q 28 68 40 60" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+                        <path d="M46 45 Q 52 55 40 60" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+                        <path d="M22 55 Q 30 50 35 55 Q 40 48 46 45" stroke="#1A1A1A" strokeWidth="0.9" strokeLinejoin="round" fill="none" />
+                        <path d="M30 53 C 32 58 35 60 40 60" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+                        <path d="M40 48 C 38 52 38 55 40 60" stroke="#1A1A1A" strokeWidth="0.9" strokeLinecap="round" fill="none" />
+
+                        {/* Leaves */}
+                        <path d="M60 48 C 75 35 85 45 85 45 C 85 55 70 60 60 48 Z" stroke="#1A1A1A" strokeWidth="0.9" strokeLinejoin="round" fill="none" />
+                        <path d="M60 48 Q 72 45 82 45" stroke="#1A1A1A" strokeWidth="0.9" fill="none" />
+
+                        <path d="M60 55 C 50 42 42 45 42 50 C 42 58 50 62 60 55 Z" stroke="#1A1A1A" strokeWidth="0.9" strokeLinejoin="round" fill="none" />
+                        <path d="M60 55 Q 55 50 45 48" stroke="#1A1A1A" strokeWidth="0.9" fill="none" />
+
+                        <path d="M58 85 C 40 75 30 80 30 85 C 30 95 45 95 58 85 Z" stroke="#1A1A1A" strokeWidth="0.9" strokeLinejoin="round" fill="none" />
+                        <path d="M58 85 Q 45 85 35 85" stroke="#1A1A1A" strokeWidth="0.9" fill="none" />
+                    </svg>
+                </div>
+
                 <h2 style={{
-                    fontFamily: "'Pinyon Script', cursive",
-                    fontSize: "clamp(2rem, 6vw, 3rem)",
-                    color: "#4A3728", marginBottom: 8,
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "clamp(1.2rem, 4vw, 1.8rem)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                    color: "#4A3728",
+                    marginBottom: 48,
+                    lineHeight: 1.6,
+                    fontWeight: 400
                 }}>
-                    Reception to Follow
+                    {t('blessingOfParents')}
                 </h2>
+
+                {/* Bride's Parents */}
+                <div style={{ marginBottom: 40 }}>
+                    <p style={{
+                        fontFamily: "'Pinyon Script', cursive",
+                        fontSize: "clamp(2rem, 6vw, 2.5rem)",
+                        color: "#7A6455",
+                        marginBottom: 16
+                    }}>
+                        {t('bride')}
+                    </p>
+                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", marginBottom: 8, textTransform: "uppercase", fontWeight: 300 }}>
+                        Jorge Kotch
+                    </p>
+                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 300 }}>
+                        Marleni Kotch
+                    </p>
+                </div>
+
+                {/* Groom's Parents */}
+                <div style={{ marginBottom: 56 }}>
+                    <p style={{
+                        fontFamily: "'Pinyon Script', cursive",
+                        fontSize: "clamp(2rem, 6vw, 2.5rem)",
+                        color: "#7A6455",
+                        marginBottom: 16
+                    }}>
+                        {t('groom')}
+                    </p>
+                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", marginBottom: 8, textTransform: "uppercase", fontWeight: 300 }}>
+                        Luis Coc
+                    </p>
+                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 300 }}>
+                        Celia Coc
+                    </p>
+                </div>
 
                 <ThinLine />
 
-                <div style={{
-                    padding: 24, borderRadius: 12,
-                    border: "1px solid rgba(235,223,208,0.4)",
-                    backgroundColor: "rgba(247,231,206,0.25)",
-                    marginBottom: 32,
-                }}>
-                    <div style={{ fontSize: "2rem", marginBottom: 12 }}>🥂</div>
-                    <p style={{ fontFamily: "'Playfair Display', serif", color: "#4A3728", fontSize: "1rem", marginBottom: 4 }}>
-                        Dinner & Dancing
+                {/* Godparents */}
+                <div style={{ marginTop: 40 }}>
+                    <h2 style={{
+                        fontFamily: "'Playfair Display', serif",
+                        fontSize: "clamp(1.1rem, 3.5vw, 1.5rem)",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.15em",
+                        color: "#4A3728",
+                        marginBottom: 24,
+                        lineHeight: 1.6,
+                        fontWeight: 400
+                    }}>
+                        {t('accompaniedByGodparents')}
+                    </h2>
+                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", marginBottom: 8, textTransform: "uppercase", fontWeight: 300 }}>
+                        Jenny Panti
                     </p>
-                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#7A6455", fontSize: "0.85rem" }}>
-                        to follow immediately after the ceremony
+                    <p style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 300 }}>
+                        Gary Panti
                     </p>
                 </div>
+
             </motion.div>
         </section>
     )
 }
 
-/* ── Default export (not currently used, but kept for compatibility) ── */
+/* ═══════════════════════════════════════════════════
+   Section 4: BIBLE VERSES
+   ═══════════════════════════════════════════════════ */
+export function VerseSection({ text, reference }) {
+    return (
+        <section style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            backgroundColor: "#FBF6F3", textAlign: "center", padding: "80px 24px",
+            minHeight: "50vh"
+        }}>
+            <motion.div
+                style={{ width: "100%", maxWidth: 640, margin: "0 auto", position: "relative" }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 1.0, ease: "easeOut" }}
+            >
+                <div style={{ marginBottom: 24, display: "flex", justifyContent: "center", opacity: 0.6 }}>
+                    <svg width="40" height="20" viewBox="0 0 40 20" fill="none" stroke="#C4A44E" strokeWidth="1" strokeLinecap="round">
+                        <path d="M0 10 L15 10 M25 10 L40 10 M20 5 L20 15" strokeDasharray="2 4" />
+                        <circle cx="20" cy="10" r="3" fill="none" />
+                    </svg>
+                </div>
+
+                <p style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: "clamp(1.4rem, 4vw, 2rem)",
+                    color: "#4A3728",
+                    fontStyle: "italic",
+                    lineHeight: 1.6,
+                    marginBottom: 24,
+                    letterSpacing: "0.02em"
+                }}>
+                    "{text}"
+                </p>
+
+                <p style={{
+                    fontFamily: "'Roboto', sans-serif",
+                    fontSize: "0.85rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.25em",
+                    color: "#C4A44E",
+                    fontWeight: 500
+                }}>
+                    {reference}
+                </p>
+            </motion.div>
+        </section>
+    )
+}
+
 export default function WeddingInfo() {
     return (
         <>
             <DetailWhen />
             <DetailWhere />
-            <DetailReception />
+            <DetailPeople />
         </>
     )
 }

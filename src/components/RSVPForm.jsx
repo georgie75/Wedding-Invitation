@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useMutation } from '@tanstack/react-query'
 import { supabase } from '../lib/supabaseClient'
+import { useLanguage } from '../context/LanguageContext'
 
 /* ── Decorative separator ── */
 const GoldLine = () => (
@@ -15,6 +16,7 @@ const GoldLine = () => (
 )
 
 const RSVPForm = ({ guestId, maxAttendees }) => {
+    const { t } = useLanguage()
     const [attending, setAttending] = useState(null)
     const [numAttending, setNumAttending] = useState(1)
     const [submitted, setSubmitted] = useState(false)
@@ -74,13 +76,10 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                             >
                                 {attending ? "🎉" : "💌"}
                             </motion.div>
-                            <h2 className="text-4xl font-playfair text-wedding-text mb-3">Thank You</h2>
+                            <h2 className="text-4xl font-playfair text-wedding-text mb-3">{t('rsvpSuccess')}</h2>
                             <GoldLine />
                             <p className="font-roboto text-wedding-text-light text-lg">
-                                {attending
-                                    ? "We can't wait to celebrate with you!"
-                                    : "We will miss you dearly."
-                                }
+                                {t('rsvpSuccessMessage')}
                             </p>
                         </motion.div>
                     ) : (
@@ -91,7 +90,7 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                         >
                             {/* Header */}
                             <p className="text-sm uppercase tracking-[0.3em] text-wedding-gold mb-2 font-roboto">
-                                Kindly Respond
+                                {t('replyBy')}
                             </p>
                             <h2
                                 className="text-wedding-text mb-2"
@@ -100,7 +99,7 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                                     fontSize: "clamp(2.5rem, 8vw, 4rem)",
                                 }}
                             >
-                                RSVP
+                                {t('rsvpTitle')}
                             </h2>
                             <GoldLine />
 
@@ -113,11 +112,11 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                                         whileHover={{ scale: 1.03 }}
                                         whileTap={{ scale: 0.97 }}
                                         className={`px-8 py-3 rounded-full border-2 transition-all duration-300 font-playfair text-base tracking-wide ${attending === true
-                                                ? 'bg-wedding-gold border-wedding-gold text-white shadow-lg'
-                                                : 'border-wedding-tan text-wedding-text-light hover:border-wedding-gold/60'
+                                            ? 'bg-wedding-gold border-wedding-gold text-white shadow-lg'
+                                            : 'border-wedding-tan text-wedding-text-light hover:border-wedding-gold/60'
                                             }`}
                                     >
-                                        Joyfully Accept
+                                        {t('yesAttending')}
                                     </motion.button>
                                     <motion.button
                                         type="button"
@@ -125,11 +124,11 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                                         whileHover={{ scale: 1.03 }}
                                         whileTap={{ scale: 0.97 }}
                                         className={`px-8 py-3 rounded-full border-2 transition-all duration-300 font-playfair text-base tracking-wide ${attending === false
-                                                ? 'bg-wedding-text border-wedding-text text-white shadow-lg'
-                                                : 'border-wedding-tan text-wedding-text-light hover:border-wedding-text/40'
+                                            ? 'bg-wedding-text border-wedding-text text-white shadow-lg'
+                                            : 'border-wedding-tan text-wedding-text-light hover:border-wedding-text/40'
                                             }`}
                                     >
-                                        Regretfully Decline
+                                        {t('noDeclining')}
                                     </motion.button>
                                 </div>
 
@@ -145,7 +144,7 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                                         >
                                             <div className="bg-wedding-champagne/30 rounded-xl p-6 border border-wedding-tan/20">
                                                 <label className="block text-sm font-playfair text-wedding-text mb-3 tracking-wide">
-                                                    Number of Guests
+                                                    {t('confirmNumber')}
                                                 </label>
                                                 <div className="flex items-center justify-center gap-4">
                                                     <motion.button
@@ -172,7 +171,7 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                                                     </motion.button>
                                                 </div>
                                                 <p className="mt-2 text-xs text-wedding-text-light font-roboto">
-                                                    Maximum {maxAttendees} guests
+                                                    {t('canBringUpTo')} {maxAttendees} {t('guests')}
                                                 </p>
                                             </div>
                                         </motion.div>
@@ -201,7 +200,7 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                                     whileTap={{ scale: 0.98 }}
                                     className="w-full py-4 rounded-full text-sm font-playfair uppercase tracking-[0.2em] text-white bg-wedding-gold shadow-md hover:shadow-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300"
                                 >
-                                    {mutation.isPending ? 'Sending...' : 'Send Response'}
+                                    {mutation.isPending ? t('submitting') : t('submitRsvp')}
                                 </motion.button>
                             </form>
                         </motion.div>

@@ -3,9 +3,10 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { AnimatePresence, motion, useInView } from 'framer-motion'
 import { supabase } from '../lib/supabaseClient'
+import { useLanguage } from '../context/LanguageContext'
 import Envelope from '../components/Envelope'
 import Hero from '../components/Hero'
-import { DetailWhen, DetailWhere, DetailReception } from '../components/WeddingInfo'
+import { DetailWhen, DetailWhere, DetailPeople, VerseSection } from '../components/WeddingInfo'
 import RSVPForm from '../components/RSVPForm'
 import Footer from '../components/Footer'
 
@@ -39,6 +40,7 @@ const FadeSection = ({ children, snap = true }) => {
 
 const InvitePage = () => {
   const { slug } = useParams()
+  const { t } = useLanguage()
   const [envelopeOpen, setEnvelopeOpen] = React.useState(false)
 
   const { data: guest, isLoading, error } = useQuery({
@@ -116,6 +118,11 @@ const InvitePage = () => {
             <Hero guestName={guest.family_name} maxAttendees={guest.max_attendees} />
           </div>
 
+          {/* First Bible Verse */}
+          <FadeSection>
+            <VerseSection text={t('verse1Text')} reference={t('verse1Ref')} />
+          </FadeSection>
+
           {/* When */}
           <FadeSection>
             <DetailWhen />
@@ -126,9 +133,14 @@ const InvitePage = () => {
             <DetailWhere />
           </FadeSection>
 
-          {/* Reception */}
+          {/* Second Bible Verse */}
           <FadeSection>
-            <DetailReception />
+            <VerseSection text={t('verse2Text')} reference={t('verse2Ref')} />
+          </FadeSection>
+
+          {/* People Involved */}
+          <FadeSection>
+            <DetailPeople />
           </FadeSection>
 
           {/* RSVP Form */}

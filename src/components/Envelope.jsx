@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { motion, useAnimationControls } from "framer-motion";
+import { useLanguage } from "../context/LanguageContext";
 import backPaper from "../assets/backpaper2.png";
 import topFlap from "../assets/topFlap.png";
 import sealSVG from "../assets/envelope/A&L seal.svg";
@@ -37,7 +38,7 @@ const styles = {
         justifyContent: "center",
         width: "100%",
         maxWidth: 1000,
-        marginTop: "-10vh", // Move the group up
+        // marginTop: "-5vh", // Move the group up
     },
 
     headerText: {
@@ -53,11 +54,11 @@ const styles = {
 
     namesText: {
         fontFamily: "'Playfair Display', serif",
-        fontSize: "min(9vw, 64px)",
+        fontSize: "min(6vw, 60px)",
         textTransform: "uppercase",
         letterSpacing: "0.15em",
         color: "#5e4b35",
-        marginBottom: "2rem",
+        marginBottom: "0rem",
         textAlign: "center",
         zIndex: 60,
         lineHeight: 1,
@@ -92,10 +93,10 @@ const styles = {
 
     seal: {
         position: "absolute",
-        width: "25%",
-        maxWidth: 160,
+        width: "23%",
+        maxWidth: 150,
         aspectRatio: "1/1",
-        left: "38%",
+        left: "37.5%",
         top: "50%", // Adjust this value if the flap tip is higher/lower
         transform: "translate(-50%, -50%)",
         zIndex: 25,
@@ -162,7 +163,8 @@ const styles = {
     },
 };
 
-export default function FullScreenEnvelope({ onOpen }) {
+export default function FullScreenEnvelope({ onOpen, guestName }) {
+    const { t } = useLanguage();
     const [playing, setPlaying] = useState(false);
     const controls = useAnimationControls();
 
@@ -210,9 +212,9 @@ export default function FullScreenEnvelope({ onOpen }) {
                     transition={{ duration: 1, delay: 0.2 }}
                 >
                     <div style={styles.headerText}>
-                        Together with their families
+                        {t('exclusiveInvite')} {/* Replaced string */}
                     </div>
-                    <div style={styles.namesText}>Jenny & Gary</div>
+                    <div style={styles.namesText}>{guestName}</div>
                 </motion.div>
 
                 {/* Envelope Group */}
@@ -335,9 +337,18 @@ export default function FullScreenEnvelope({ onOpen }) {
                     </motion.div>
                 </div>
 
-
+                {/* Click Hint */}
+                {!playing && (
+                    <motion.div
+                        style={styles.clickHint}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 0.7, y: 0 }}
+                        transition={{ delay: 1, duration: 1 }}
+                    >
+                        {t('openHint')} {/* Replaced string */}
+                    </motion.div>
+                )}
             </div>
         </div>
     );
 }
-

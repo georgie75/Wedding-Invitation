@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '../context/LanguageContext'
 
 /* ── Inline SVG: Elegant Ornate Wedding Rings ── */
 const WeddingRingsIcon = ({ color = "#B08D57", size = 130 }) => (
@@ -48,14 +49,20 @@ const Flourish = ({ color = "#B08D57" }) => (
 )
 
 const Hero = ({ guestName, maxAttendees }) => {
+    const { t, lang, toggleLanguage } = useLanguage();
+
     return (
         <section className="relative min-h-screen flex items-center justify-center text-center overflow-hidden bg-wedding-cream">
-            {/* Subtle texture overlay */}
-            {/* <div className="absolute inset-0 opacity-[0.03]"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237A1E3A' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                }}
-            /> */}
+
+            {/* Language Toggle */}
+            <div className="absolute top-6 right-6 z-50">
+                <button
+                    onClick={toggleLanguage}
+                    className="px-3 py-1.5 rounded-full border border-wedding-tan/30 bg-wedding-champagne/40 text-wedding-gold font-roboto text-sm uppercase tracking-widest hover:bg-wedding-champagne transition-colors"
+                >
+                    {lang === 'en' ? 'ES' : 'EN'}
+                </button>
+            </div>
 
             <div className="relative z-10 flex flex-col items-center px-6 max-w-2xl">
                 {/* Wedding Rings */}
@@ -136,7 +143,7 @@ const Hero = ({ guestName, maxAttendees }) => {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1.2, delay: 1.4 }}
                 >
-                    Request the pleasure of your company
+                    {t('togetherWithFamilies')}
                 </motion.p>
             </div>
 
@@ -159,3 +166,5 @@ const Hero = ({ guestName, maxAttendees }) => {
 }
 
 export default Hero
+
+
