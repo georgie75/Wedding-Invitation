@@ -119,20 +119,10 @@ const styles = {
     pointerEvents: "none",
     zIndex: 100,
   },
-
-  clickHint: {
-    marginTop: "1.5rem",
-    fontFamily: "'Playfair Display', serif",
-    letterSpacing: "0.2em",
-    fontSize: "12px",
-    color: "#8a7a6a",
-    textTransform: "uppercase",
-    opacity: 0.7,
-  },
 };
 
 export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
-  const { t } = useLanguage();
+  const { t, lang, toggleLanguage } = useLanguage();
   const [playing, setPlaying] = useState(false);
   const controls = useAnimationControls();
 
@@ -161,6 +151,18 @@ export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
 
   return (
     <div style={styles.stage} onClick={handleTap}>
+      {/* Language Toggle */}
+      <div style={{ position: "absolute", top: "40px", right: "40px", zIndex: 150 }}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); // prevent triggering the envelope animation
+            toggleLanguage();
+          }}
+          className="w-10 h-10 flex items-center justify-center rounded-full border border-wedding-tan bg-wedding-cream/60 backdrop-blur-sm text-wedding-gold font-roboto text-xs uppercase tracking-widest hover:bg-wedding-tan/30 transition-colors shadow-sm">
+          {lang === "en" ? "ES" : "EN"}
+        </button>
+      </div>
+
       {/* White Flash Overlay */}
       <motion.div
         style={styles.flash}
@@ -280,13 +282,6 @@ export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
             />
           </motion.div>
         </div>
-
-        {/* Click Hint */}
-        {!playing && (
-          <motion.div style={styles.clickHint} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 0.7, y: 0 }} transition={{ delay: 1, duration: 1 }}>
-            {t("openHint")} {/* Replaced string */}
-          </motion.div>
-        )}
       </div>
     </div>
   );
