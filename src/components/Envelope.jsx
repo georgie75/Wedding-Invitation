@@ -3,8 +3,8 @@ import { motion, useAnimationControls } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
 import backPaper from "../assets/backpaper2.png";
 import topFlap from "../assets/topFlap.png";
-import sealSVG from "../assets/envelope/A&L seal.svg";
-import bgImage from "../assets/entrancebg.png";
+import sealSVG from "../assets/envelope/waxseal2.svg";
+import bgImage from "../assets/entrancebg2.png";
 /* ── inline styles ─────────────────────────────────────── */
 const styles = {
   stage: {
@@ -16,7 +16,7 @@ const styles = {
     justifyContent: "center",
     backgroundImage: `url(${bgImage})`,
     backgroundSize: "cover",
-    backgroundPosition: "center bottom",
+    backgroundPosition: "calc(50% - 5px) bottom",
 
     backgroundColor: "#f5efe9",
     overflow: "hidden",
@@ -34,27 +34,39 @@ const styles = {
     justifyContent: "center",
     width: "100%",
     maxWidth: 1000,
-    // marginTop: "-5vh", // Move the group up
+    marginTop: "-8vh", // Move the group up to balance the added text and space
   },
 
   headerText: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "'Montserrat', sans-serif",
     textTransform: "uppercase",
-    letterSpacing: "0.15em",
-    fontSize: "min(3vw, 14px)",
-    color: "#5e4b35",
+    letterSpacing: "0.25em",
+    fontWeight: 300,
+    fontSize: "min(2.8vw, 13px)",
+    color: "#4a3c31",
     marginBottom: "1rem",
     textAlign: "center",
     zIndex: 60,
   },
 
   namesText: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: "min(6vw, 60px)",
+    fontFamily: "'Cormorant Garamond', serif",
+    fontSize: "min(8vw, 68px)",
     textTransform: "uppercase",
-    letterSpacing: "0.15em",
+    letterSpacing: "0.08em",
+    fontWeight: 400,
+    color: "#4a3c31",
+    marginBottom: "1rem",
+    textAlign: "center",
+    zIndex: 60,
+    lineHeight: 1,
+  },
+
+  andFamilyText: {
+    fontFamily: "'Sloop Script', 'Great Vibes', cursive",
+    fontSize: "min(7vw, 45px)", // Elegant size matching the cursive style
     color: "#5e4b35",
-    marginBottom: "0rem",
+    marginTop: "0rem", // Removed negative margin to prevent overlapping the guest name
     textAlign: "center",
     zIndex: 60,
     lineHeight: 1,
@@ -181,9 +193,12 @@ export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
         {/* Text Group */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
           <div style={styles.headerText}>
-            {t("exclusiveInvite")} {/* Replaced string */}
+            {t("exclusiveInvite")}
           </div>
           <div style={styles.namesText}>{guestName}</div>
+          <div style={styles.headerText}>
+            {t("andFamily")}
+          </div>
         </motion.div>
 
         {/* Envelope Group */}
@@ -194,8 +209,8 @@ export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
             animate={
               !playing
                 ? {
-                    y: [0, -8, 0],
-                  }
+                  y: [0, -8, 0],
+                }
                 : {}
             }
             transition={{

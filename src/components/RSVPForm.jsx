@@ -15,11 +15,67 @@ const GoldLine = () => (
     </div>
 )
 
+/* ── Royal Success Crest ── */
+const RSVPFlourish = ({ attending }) => (
+    <div className="flex justify-center mb-8 text-wedding-gold">
+        <svg width="84" height="84" viewBox="0 0 100 100" fill="none" className="drop-shadow-sm">
+            {/* Elegant Diamond Frame */}
+            <path d="M50 5 L95 50 L50 95 L5 50 Z" stroke="currentColor" strokeWidth="0.5" />
+            <path d="M50 12 L88 50 L50 88 L12 50 Z" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.6" />
+
+            {attending ? (
+                /* Elegant Checkmark */
+                <path d="M38 52 L46 60 L64 40" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            ) : (
+                /* Elegant Envelope */
+                <path d="M34 42 L50 54 L66 42 M34 42 L34 58 L66 58 L66 42 Z" stroke="currentColor" strokeWidth="1" strokeLinejoin="round" />
+            )}
+
+            <circle cx="50" cy="5" r="2" fill="currentColor" />
+            <circle cx="50" cy="95" r="2" fill="currentColor" />
+            <circle cx="5" cy="50" r="2" fill="currentColor" />
+            <circle cx="95" cy="50" r="2" fill="currentColor" />
+        </svg>
+    </div>
+)
+
 const RSVPForm = ({ guestId, maxAttendees }) => {
     const { t } = useLanguage()
     const [attending, setAttending] = useState(null)
     const [numAttending, setNumAttending] = useState(1)
     const [submitted, setSubmitted] = useState(false)
+    const [initialLoading, setInitialLoading] = useState(true)
+
+    // Check if guest already RSVP'd
+    React.useEffect(() => {
+        const checkExistingRSVP = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('rsvps')
+                    .select('*')
+                    .eq('guest_id', guestId)
+                    .single()
+
+                if (data) {
+                    setAttending(data.attending)
+                    setNumAttending(data.num_attending)
+                    setSubmitted(true)
+                }
+            } catch (err) {
+                // Ignore errors (e.g. no rows found is expected if they haven't RSVP'd)
+            } finally {
+                setInitialLoading(false)
+            }
+        }
+
+        if (guestId) {
+            checkExistingRSVP()
+        } else {
+            setInitialLoading(false)
+        }
+    }, [guestId])
+
+    const [confirming, setConfirming] = useState(false)
 
     const mutation = useMutation({
         mutationFn: async (formData) => {
@@ -31,16 +87,22 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
         },
         onSuccess: () => {
             setSubmitted(true)
+            setConfirming(false)
         },
         onError: (error) => {
             alert('Error submitting RSVP: ' + error.message)
+            setConfirming(false)
         }
     })
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (attending === null) return
+        if (attending === null || submitted) return
+        // Show confirmation step instead of submitting immediately
+        setConfirming(true)
+    }
 
+    const handleConfirm = () => {
         const data = {
             guest_id: guestId,
             attending,
@@ -59,7 +121,20 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                 transition={{ duration: 0.8 }}
             >
                 <AnimatePresence mode="wait">
-                    {submitted ? (
+                    {initialLoading ? (
+                        <motion.div
+                            key="loading"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="py-12 flex flex-col items-center justify-center min-h-[300px]"
+                        >
+                            <div className="w-8 h-8 rounded-full border-2 border-wedding-gold border-t-transparent animate-spin mb-4" />
+                            <p className="text-wedding-text-light font-playfair italic text-sm tracking-widest uppercase">
+                                Loading...
+                            </p>
+                        </motion.div>
+                    ) : submitted ? (
                         /* ── Success State ── */
                         <motion.div
                             key="success"
@@ -72,15 +147,58 @@ const RSVPForm = ({ guestId, maxAttendees }) => {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                                className="text-5xl mb-6"
                             >
-                                {attending ? "🎉" : "💌"}
+                                <RSVPFlourish attending={attending} />
                             </motion.div>
                             <h2 className="text-4xl font-playfair text-wedding-text mb-3">{t('rsvpSuccess')}</h2>
                             <GoldLine />
                             <p className="font-roboto text-wedding-text-light text-lg">
                                 {t('rsvpSuccessMessage')}
                             </p>
+                        </motion.div>
+                    ) : confirming ? (
+                        /* ── Confirmation Step ── */
+                        <motion.div
+                            key="confirm"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.4 }}
+                            className="py-12"
+                        >
+                            <p className="text-sm uppercase tracking-[0.3em] text-wedding-gold mb-4 font-roboto">Please Confirm</p>
+                            <h2 className="font-playfair text-wedding-text text-2xl mb-2">
+                                {attending ? 'Joyfully Attending' : 'Regretfully Declining'}
+                            </h2>
+                            <GoldLine />
+                            {attending && (
+                                <p className="font-roboto text-wedding-text-light text-base mb-6">
+                                    {numAttending} {numAttending === 1 ? 'guest' : 'guests'} attending
+                                </p>
+                            )}
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => setConfirming(false)}
+                                    className="px-6 py-2 rounded-full border border-wedding-tan text-wedding-text-light font-roboto text-sm hover:border-wedding-gold/60 transition-all"
+                                    disabled={mutation.isPending}
+                                >
+                                    Go Back
+                                </button>
+                                <motion.button
+                                    type="button"
+                                    onClick={handleConfirm}
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.97 }}
+                                    disabled={mutation.isPending}
+                                    className="px-8 py-3 rounded-full bg-wedding-gold text-white font-playfair text-base tracking-wide shadow-lg hover:bg-wedding-gold/90 transition-colors disabled:opacity-60 flex items-center gap-2"
+                                >
+                                    {mutation.isPending && (
+                                        <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                                    )}
+                                    Confirm RSVP
+                                </motion.button>
+                            </div>
                         </motion.div>
                     ) : (
                         /* ── Form State ── */

@@ -4,6 +4,7 @@ const translations = {
   en: {
     // Envelope
     exclusiveInvite: "This invitation is exclusively for",
+    andFamily: "and family",
     openHint: "Tap to Open",
 
     // Hero
@@ -46,7 +47,7 @@ const translations = {
 
     // RSVP
     rsvpTitle: "RSVP",
-    replyBy: "Kindly reply by March 8th, 2026",
+    replyBy: "Kindly reply by March 14th, 2026",
     willYouAttend: "Will you be attending?",
     yesAttending: "Joyfully Accept",
     noDeclining: "Regretfully Decline",
@@ -62,7 +63,7 @@ const translations = {
 
     // Gifts
     giftsTitle: "Gifts",
-    giftsMessage: "Your presence is the best gift, but if you wish to give us a detail you can do it:",
+    giftsMessage: "Your presence is the best gift, However if you wish to honor us with a gift you can do it:",
     giftTable: "Gift Table",
     inEnvelope: "Inside an envelope",
     bankDetails: "Bank Details:",
@@ -73,7 +74,7 @@ const translations = {
     // Dress Code
     dressCodeTitle: "Dress Code",
     dressCodeStyle: "Formal Attire",
-    dressCodeMessage: "We kindly request that you avoid wearing white or black, as these colors are reserved for the bride and groom.",
+    dressCodeMessage: "We kindly request formal attire. Please avoid wearing white, as this color is reserved for the bride.",
     colorWhite: "White",
     colorBlack: "Black",
 
@@ -83,6 +84,7 @@ const translations = {
   es: {
     // Envelope
     exclusiveInvite: "Esta invitación es exclusivamente para",
+    andFamily: "y familia",
     openHint: "Toca para Abrir",
 
     // Hero
@@ -125,7 +127,7 @@ const translations = {
 
     // RSVP
     rsvpTitle: "RSVP",
-    replyBy: "Por favor responde antes del 8 de Marzo de 2026",
+    replyBy: "Por favor responde antes del 14 de Marzo de 2026",
     willYouAttend: "¿Asistirás?",
     yesAttending: "Acepto con Alegría",
     noDeclining: "Declino con Pesar",
@@ -152,7 +154,7 @@ const translations = {
     // Dress Code
     dressCodeTitle: "Código de Vestimenta",
     dressCodeStyle: "Vestimenta Formal",
-    dressCodeMessage: "Te pedimos amablemente evitar vestir de blanco o negro, ya que estos colores están reservados para los novios.",
+    dressCodeMessage: "Solicitamos amablemente vestimenta formal. Por favor evita vestir de blanco, ya que este color está reservado para la novia.",
     colorWhite: "Blanco",
     colorBlack: "Negro",
 

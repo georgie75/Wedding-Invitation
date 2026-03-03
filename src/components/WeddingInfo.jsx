@@ -383,8 +383,18 @@ export function DetailWhere() {
           {/* Majestic Crest / Motif */}
           <div style={{ marginBottom: 28, color: "#C4A44E" }}>
             <svg width="64" height="64" viewBox="0 0 120 120" fill="none">
-              {/* Royal minimalist crest */}
-              <path d="M60 10 L68 35 L95 35 L75 55 L82 85 L60 68 L38 85 L45 55 L25 35 L52 35 Z" fill="rgba(196,164,78,0.15)" stroke="#C4A44E" strokeWidth="1" />
+              {/* Elegant 5-Petal Floral Motif for Circles */}
+              <g transform="translate(60, 60) scale(1.15)">
+                {/* Thin inner circle */}
+                <circle cx="0" cy="0" r="18" fill="none" stroke="#C4A44E" strokeWidth="0.5" />
+
+                {/* 5 graceful overlapping petals */}
+                <path d="M0 -22 C6 -12 14 -10 4 -4 C12 -6 20 0 10 6 C15 12 10 20 2 12 C-6 20 -11 12 -6 6 C-18 0 -10 -6 -2 -4 C-12 -10 -4 -12 0 -22 Z" fill="rgba(196,164,78,0.15)" stroke="#C4A44E" strokeWidth="0.75" strokeLinejoin="round" />
+                <path d="M0 -15 C4 -8 10 -6 3 -2 C8 -3 14 0 7 3 C10 8 7 14 1 8 C-4 14 -7 8 -4 3 C-12 0 -7 -3 -1 -2 C-8 -6 -3 -8 0 -15 Z" fill="#C4A44E" opacity="0.6" />
+
+                {/* Center pearl */}
+                <circle cx="0" cy="0" r="2.5" fill="#fff" stroke="#C4A44E" strokeWidth="1" />
+              </g>
               <circle cx="60" cy="60" r="45" stroke="#C4A44E" strokeWidth="0.5" strokeDasharray="4 4" />
               <circle cx="60" cy="10" r="3" fill="#C4A44E" />
               <circle cx="60" cy="110" r="3" fill="#C4A44E" />

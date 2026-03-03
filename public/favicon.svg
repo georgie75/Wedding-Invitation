@@ -1,0 +1,8 @@
+<svg width="60" height="60" viewBox="0 0 140 118" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Left ring -->
+  <ellipse cx="48" cy="72" rx="26" ry="28" stroke="#B08D57" stroke-width="4" fill="none" />
+  <!-- Right ring -->
+  <ellipse cx="92" cy="72" rx="26" ry="28" stroke="#B08D57" stroke-width="4" fill="none" />
+  <!-- Diamond -->
+  <polygon points="48,26 40,42 48,37 56,42" stroke="#B08D57" stroke-width="3" fill="#B08D57" stroke-linejoin="round" />
+</svg>
