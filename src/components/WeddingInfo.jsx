@@ -630,7 +630,7 @@ export function DetailPeople() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 1.0 }}
             style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", marginBottom: 8, textTransform: "uppercase", fontWeight: 300 }}>
-            Luis Coc
+            Amelio Coc
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 15 }}
@@ -638,7 +638,7 @@ export function DetailPeople() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 1.2 }}
             style={{ fontFamily: "'Roboto', sans-serif", color: "#4A3728", fontSize: "0.95rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 300 }}>
-            Celia Coc
+            Martina Coc
           </motion.p>
         </motion.div>
 
