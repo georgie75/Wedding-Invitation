@@ -33,7 +33,7 @@ const translations = {
 
     // Wedding Info (People)
     thePeople: "The People",
-    blessingOfParents: "With the blessing of our parents",
+    blessingOfParents: "With the blessing of\nour parents",
     bride: "Bride",
     groom: "Groom",
     accompaniedByGodparents: "Accompanied by our godparents",
@@ -113,7 +113,7 @@ const translations = {
 
     // Wedding Info (People)
     thePeople: "Las Personas",
-    blessingOfParents: "Con la bendición de nuestros padres",
+    blessingOfParents: "Con la bendición de\nnuestros padres",
     bride: "Novia",
     groom: "Novio",
     accompaniedByGodparents: "Acompañados de nuestros padrinos",

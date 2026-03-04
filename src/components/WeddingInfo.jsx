@@ -9,21 +9,23 @@ function StaggeredText({ text, style, delay = 0 }) {
 
   return (
     <span style={{ display: "inline-block", ...style }}>
-      {letters.map((letter, index) => (
-        <motion.span
-          key={index}
-          style={{ display: "inline-block" }}
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 0.5,
-            delay: delay + index * 0.04,
-            ease: [0.2, 0.65, 0.3, 0.9],
-          }}>
-          {letter === " " ? "\u00A0" : letter}
-        </motion.span>
-      ))}
+      {letters.map((letter, index) =>
+        letter === "\n" ? <br key={index} /> : (
+          <motion.span
+            key={index}
+            style={{ display: "inline-block" }}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.5,
+              delay: delay + index * 0.04,
+              ease: [0.2, 0.65, 0.3, 0.9],
+            }}>
+            {letter === " " ? "\u00A0" : letter}
+          </motion.span>
+        )
+      )}
     </span>
   );
 }
