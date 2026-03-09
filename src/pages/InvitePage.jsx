@@ -112,7 +112,9 @@ const InvitePage = () => {
       {/* Global Audio Element */}
       <audio ref={audioRef} src={backgroundMusic} loop />
 
-      <AnimatePresence>{!envelopeOpen && <Envelope key="envelope" guestName={guest.family_name} onStartOpen={handleStartOpen} onOpen={handleOpenEnvelope} />}</AnimatePresence>
+      <AnimatePresence>
+        {!envelopeOpen && <Envelope key="envelope" guestName={guest.family_name} maxAttendees={guest.max_attendees} onStartOpen={handleStartOpen} onOpen={handleOpenEnvelope} />}
+      </AnimatePresence>
 
       {envelopeOpen && (
         <div

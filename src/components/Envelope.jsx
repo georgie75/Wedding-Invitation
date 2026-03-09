@@ -133,7 +133,7 @@ const styles = {
   },
 };
 
-export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
+export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName, maxAttendees }) {
   const { t, lang, toggleLanguage } = useLanguage();
   const [playing, setPlaying] = useState(false);
   const controls = useAnimationControls();
@@ -175,6 +175,30 @@ export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
         </button>
       </div>
 
+      {/* Tap to Open Hint */}
+      {!playing && (
+        <motion.div
+          style={{
+            position: "absolute",
+            bottom: "32px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            fontFamily: "'Montserrat', sans-serif",
+            textTransform: "uppercase",
+            letterSpacing: "0.3em",
+            fontWeight: 300,
+            fontSize: "min(2.8vw, 11px)",
+            color: "#4a3c31",
+            opacity: 0.7,
+            zIndex: 60,
+            whiteSpace: "nowrap",
+          }}
+          animate={{ opacity: [0.4, 0.85, 0.4] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}>
+          {t("openHint")}
+        </motion.div>
+      )}
+
       {/* White Flash Overlay */}
       <motion.div
         style={styles.flash}
@@ -192,13 +216,9 @@ export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
       <div style={styles.container}>
         {/* Text Group */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
-          <div style={styles.headerText}>
-            {t("exclusiveInvite")}
-          </div>
+          <div style={styles.headerText}>{t("exclusiveInvite")}</div>
           <div style={styles.namesText}>{guestName}</div>
-          <div style={styles.headerText}>
-            {t("andFamily")}
-          </div>
+          {maxAttendees > 1 && <div style={styles.headerText}>{t("andFamily")}</div>}
         </motion.div>
 
         {/* Envelope Group */}
@@ -209,8 +229,8 @@ export default function FullScreenEnvelope({ onStartOpen, onOpen, guestName }) {
             animate={
               !playing
                 ? {
-                  y: [0, -8, 0],
-                }
+                    y: [0, -8, 0],
+                  }
                 : {}
             }
             transition={{
